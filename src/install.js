@@ -1,9 +1,11 @@
 import View from './components/view'
 import Link from './components/link'
 
+// 标志位: 记录VueRouter是否已安装
 export let _Vue
 
 export function install (Vue) {
+  // 判断是否已安装VueRouter, 避免重复安装
   if (install.installed && _Vue === Vue) return
   install.installed = true
 
@@ -18,8 +20,10 @@ export function install (Vue) {
     }
   }
 
+  // 混入钩子函数
   Vue.mixin({
     beforeCreate () {
+      // 当new VueRouter({ router })闯入router时, 进行初始化
       if (isDef(this.$options.router)) {
         this._routerRoot = this
         this._router = this.$options.router
