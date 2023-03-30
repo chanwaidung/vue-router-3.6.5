@@ -39,34 +39,48 @@ export default class VueRouter {
 
   constructor (options: RouterOptions = {}) {
     if (process.env.NODE_ENV !== 'production') {
+      // 确保当前class使用new操作符调用
       warn(this instanceof VueRouter, `Router must be called with the new operator.`)
     }
+    // 缓存Vue实例
     this.app = null
     this.apps = []
+    // 缓存VueRouter插件参数
     this.options = options
+    // 缓存前置钩子函数
     this.beforeHooks = []
+    // 缓存resolve钩子函数
     this.resolveHooks = []
+    // 缓存后置钩子函数
     this.afterHooks = []
+    // 初始化并缓存match到的路由
     this.matcher = createMatcher(options.routes || [], this)
-
+    // 缓存当前路由模式
     let mode = options.mode || 'hash'
+    // 路由模式降级标志
     this.fallback =
       mode === 'history' && !supportsPushState && options.fallback !== false
     if (this.fallback) {
       mode = 'hash'
     }
+    // 判断是否在浏览器环境，非则降级
     if (!inBrowser) {
       mode = 'abstract'
     }
+    // 缓存路由模式
     this.mode = mode
 
+    // 根据模式，初始化相关路由
     switch (mode) {
+      // 初始化history路由模式
       case 'history':
         this.history = new HTML5History(this, options.base)
         break
+      // 初始化hash路由模式
       case 'hash':
         this.history = new HashHistory(this, options.base, this.fallback)
         break
+      // 初始化abstract路由模式
       case 'abstract':
         this.history = new AbstractHistory(this, options.base)
         break
