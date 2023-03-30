@@ -100,17 +100,20 @@ export default class VueRouter {
   }
 
   init (app: any /* Vue component instance */) {
+    // 确保VueRouter被安装
     process.env.NODE_ENV !== 'production' &&
       assert(
         install.installed,
         `not installed. Make sure to call \`Vue.use(VueRouter)\` ` +
           `before creating root instance.`
       )
-
+    // 缓存Vue实例
     this.apps.push(app)
 
     // set up app destroyed handler
     // https://github.com/vuejs/vue-router/issues/2639
+    // 当Vue实例被销毁时, 删除this.app 和 this.apps中的Vue实例引用
+    // 防止内存泄露
     app.$once('hook:destroyed', () => {
       // clean out app from this.apps array once destroyed
       const index = this.apps.indexOf(app)
