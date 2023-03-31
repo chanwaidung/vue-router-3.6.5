@@ -11,8 +11,9 @@ export class HTML5History extends History {
   _startLocation: string
 
   constructor (router: Router, base: ?string) {
+    // 继承父类
     super(router, base)
-
+    // 缓存根定位
     this._startLocation = getLocation(this.base)
   }
 
@@ -26,6 +27,7 @@ export class HTML5History extends History {
     const supportsScroll = supportsPushState && expectScroll
 
     if (supportsScroll) {
+      // 监听popstate, 并将取消监听函数推进listeners队列
       this.listeners.push(setupScroll())
     }
 
@@ -35,16 +37,18 @@ export class HTML5History extends History {
       // Avoiding first `popstate` event dispatched in some browsers but first
       // history route not updated since async guard at the same time.
       const location = getLocation(this.base)
+      // 如果当前路由为初始路由则退出执行
       if (this.current === START && location === this._startLocation) {
         return
       }
-
+      // 执行跳转到指定的路由逻辑
       this.transitionTo(location, route => {
         if (supportsScroll) {
           handleScroll(router, route, current, true)
         }
       })
     }
+    // 监听当 `popstate` 时, 切换transitionTo到指定组件
     window.addEventListener('popstate', handleRoutingEvent)
     this.listeners.push(() => {
       window.removeEventListener('popstate', handleRoutingEvent)
