@@ -136,7 +136,9 @@ export default class VueRouter {
     const history = this.history
 
     if (history instanceof HTML5History || history instanceof HashHistory) {
+      // 路由跳转时，初始化滚动条位置
       const handleInitialScroll = routeOrError => {
+        // 设置当前的路由Route
         const from = history.current
         const expectScroll = this.options.scrollBehavior
         const supportsScroll = supportsPushState && expectScroll
@@ -145,6 +147,7 @@ export default class VueRouter {
           handleScroll(this, routeOrError, from, false)
         }
       }
+      // 初始化history内部监听器
       const setupListeners = routeOrError => {
         history.setupListeners()
         handleInitialScroll(routeOrError)
