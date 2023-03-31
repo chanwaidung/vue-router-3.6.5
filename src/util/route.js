@@ -11,26 +11,39 @@ export function createRoute (
   redirectedFrom?: ?Location,
   router?: VueRouter
 ): Route {
+  // 获取stringifyQuery函数, 该方法会将object对象转为key=value键值对
   const stringifyQuery = router && router.options.stringifyQuery
 
+  // 获取location的query参数
   let query: any = location.query || {}
   try {
+    // 深度克隆query参数
     query = clone(query)
   } catch (e) {}
 
   const route: Route = {
+    // 路由名称
     name: location.name || (record && record.name),
+    // 路由元数据
     meta: (record && record.meta) || {},
+    // 路由路径
     path: location.path || '/',
+    // 路由Hash
     hash: location.hash || '',
+    // query参数
     query,
+    // params参数
     params: location.params || {},
+    // 当前路由全路径
     fullPath: getFullPath(location, stringifyQuery),
+    // 自顶向下缓存路由链条
     matched: record ? formatMatch(record) : []
   }
   if (redirectedFrom) {
+    // 设置redirectedFrom重定向全路径
     route.redirectedFrom = getFullPath(redirectedFrom, stringifyQuery)
   }
+  // 冻结并返回route对象
   return Object.freeze(route)
 }
 
