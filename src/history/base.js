@@ -21,7 +21,7 @@ import {
   NavigationFailureType
 } from '../util/errors'
 import { handleScroll } from '../util/scroll'
-
+// HTML5History\HashHistory\AbstractHistory的基类
 export class History {
   router: Router
   base: string
@@ -48,10 +48,14 @@ export class History {
   +setupListeners: Function
 
   constructor (router: Router, base: ?string) {
+    // 缓存router实例
     this.router = router
+    // 兜底并缓存基础路径
     this.base = normalizeBase(base)
     // start with a route object that stands for "nowhere"
+    // 初始化一个启动默认路由
     this.current = START
+    // 当前
     this.pending = null
     this.ready = false
     this.readyCbs = []
@@ -266,7 +270,7 @@ export class History {
     this.pending = null
   }
 }
-
+// 兜底补全路由基础路径
 function normalizeBase (base: ?string): string {
   if (!base) {
     if (inBrowser) {
