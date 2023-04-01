@@ -70,5 +70,6 @@ export function parsePath (path: string): {
 }
 
 export function cleanPath (path: string): string {
+  // 将形如：//home/// 转换为 /home/
   return path.replace(/\/(?:\s*\/)+/g, '/')
 }
