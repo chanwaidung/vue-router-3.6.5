@@ -44,6 +44,7 @@ export class HTML5History extends History {
       // 执行跳转到指定的路由逻辑
       this.transitionTo(location, route => {
         if (supportsScroll) {
+          // 处理路由跳转时的滚动事件
           handleScroll(router, route, current, true)
         }
       })
@@ -78,8 +79,10 @@ export class HTML5History extends History {
   }
 
   ensureURL (push?: boolean) {
+    // 当前环境（window）的uri !== 当前路由的fullPath, 确保页面不重复添加
     if (getLocation(this.base) !== this.current.fullPath) {
       const current = cleanPath(this.base + this.current.fullPath)
+      // 调用history相关API, 实现路由跳转
       push ? pushState(current) : replaceState(current)
     }
   }
