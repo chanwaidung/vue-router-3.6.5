@@ -50,7 +50,9 @@ export function handleScroll (
 
   // wait until re-render finishes before scrolling
   router.app.$nextTick(() => {
+    // 获取scrollPosition数据
     const position = getScrollPosition()
+    // 调用传入的behavior函数
     const shouldScroll = behavior.call(
       router,
       to,
@@ -62,9 +64,11 @@ export function handleScroll (
       return
     }
 
+    // 校验shouldScroll.then
     if (typeof shouldScroll.then === 'function') {
       shouldScroll
         .then(shouldScroll => {
+          // 开始scroll
           scrollToPosition((shouldScroll: any), position)
         })
         .catch(err => {
@@ -141,11 +145,13 @@ function scrollToPosition (shouldScroll, position) {
   if (isObject && typeof shouldScroll.selector === 'string') {
     // getElementById would still fail if the selector contains a more complicated query like #main[data-attr]
     // but at the same time, it doesn't make much sense to select an element with an id and an extra selector
+    // 获取滚动元素
     const el = hashStartsWithNumberRE.test(shouldScroll.selector) // $flow-disable-line
       ? document.getElementById(shouldScroll.selector.slice(1)) // $flow-disable-line
       : document.querySelector(shouldScroll.selector)
 
     if (el) {
+      // 处理滚动距离offset
       let offset =
         shouldScroll.offset && typeof shouldScroll.offset === 'object'
           ? shouldScroll.offset
@@ -159,6 +165,7 @@ function scrollToPosition (shouldScroll, position) {
     position = normalizePosition(shouldScroll)
   }
 
+  // 调用window.scroll
   if (position) {
     // $flow-disable-line
     if ('scrollBehavior' in document.documentElement.style) {
