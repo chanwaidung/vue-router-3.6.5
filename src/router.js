@@ -92,6 +92,7 @@ export default class VueRouter {
   }
 
   match (raw: RawLocation, current?: Route, redirectedFrom?: Location): Route {
+    // 通过match获取matcher闭包中的数据
     return this.matcher.match(raw, current, redirectedFrom)
   }
 
