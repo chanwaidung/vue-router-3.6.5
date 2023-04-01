@@ -91,6 +91,7 @@ export class History {
     let route
     // catch redirect option https://github.com/vuejs/vue-router/issues/3201
     try {
+      // 获取当前route信息
       route = this.router.match(location, this.current)
     } catch (e) {
       this.errorCbs.forEach(cb => {
