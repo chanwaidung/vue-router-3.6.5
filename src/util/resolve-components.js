@@ -78,7 +78,8 @@ export function flatMapComponents (
     return Object.keys(m.components).map(key => fn(
       m.components[key],
       m.instances[key],
-      m, key
+      m,
+      key
     ))
   }))
 }
