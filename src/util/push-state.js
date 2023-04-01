@@ -30,10 +30,13 @@ export function pushState (url?: string, replace?: boolean) {
   try {
     if (replace) {
       // preserve existing history state as it could be overriden by the user
+      // 拷贝浏览器状态state
       const stateCopy = extend({}, history.state)
       stateCopy.key = getStateKey()
+      // 将新的state存在在history的state中
       history.replaceState(stateCopy, '', url)
     } else {
+      // 调用window.history.pushState
       history.pushState({ key: setStateKey(genStateKey()) }, '', url)
     }
   } catch (e) {
