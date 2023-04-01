@@ -100,6 +100,7 @@ export class History {
       // Exception should still be thrown
       throw e
     }
+    // 准备执行confirmTransition, 当前路由自然为prev
     const prev = this.current
     this.confirmTransition(
       route,
@@ -140,6 +141,7 @@ export class History {
   }
 
   confirmTransition (route: Route, onComplete: Function, onAbort?: Function) {
+    // 获取当前路由
     const current = this.current
     this.pending = route
     const abort = err => {
@@ -160,7 +162,9 @@ export class History {
       }
       onAbort && onAbort(err)
     }
+    // 获取最后一个路由的last index
     const lastRouteIndex = route.matched.length - 1
+    // 获取当前路由matched的last index
     const lastCurrentIndex = current.matched.length - 1
     if (
       isSameRoute(route, current) &&
@@ -175,11 +179,13 @@ export class History {
       return abort(createNavigationDuplicatedError(current, route))
     }
 
+    // 对比新旧路由记录找出更新、失活、激活路由
     const { updated, deactivated, activated } = resolveQueue(
       this.current.matched,
       route.matched
     )
 
+    // 合成钩子事件队列
     const queue: Array<?NavigationGuard> = [].concat(
       // in-component leave guards
       extractLeaveGuards(deactivated),
@@ -228,6 +234,8 @@ export class History {
       }
     }
 
+    // 递归执行生命周期钩子函数, 在加载完异步组件后,
+    // 执行组件的beforeRouteEnter钩子
     runQueue(queue, iterator, () => {
       // wait until async components are resolved before
       // extracting in-component enter guards
@@ -302,11 +310,14 @@ function resolveQueue (
 } {
   let i
   const max = Math.max(current.length, next.length)
+  // 找出current: [ i-2, i-1, i, i+1, i+2 ], next: [ i-2, i-1, j ]
+  // 找出路由更新、激活、失活项
   for (i = 0; i < max; i++) {
     if (current[i] !== next[i]) {
       break
     }
   }
+  // 返回updated、activated、deactivated路由项
   return {
     updated: next.slice(0, i),
     activated: next.slice(i),
@@ -320,7 +331,10 @@ function extractGuards (
   bind: Function,
   reverse?: boolean
 ): Array<?Function> {
+  // flatMapComponents: 将路由打平, 执行回调
+  // def: 组件, instance: 组件实例, match: 匹配到的路由记录, key: 组件键名
   const guards = flatMapComponents(records, (def, instance, match, key) => {
+    // 取出组件对应的路由守卫函数, 如: beforeRouteLeave
     const guard = extractGuard(def, name)
     if (guard) {
       return Array.isArray(guard)
@@ -328,9 +342,12 @@ function extractGuards (
         : bind(guard, instance, match, key)
     }
   })
+  // 返回事件数组
   return flatten(reverse ? guards.reverse() : guards)
 }
 
+// 获取组件对应函数引用如, def: Home, name: beforeRouteLeave
+// def.options[ name ] = Home.options[ 'beforeRouteLeave' ]
 function extractGuard (
   def: Object | Function,
   key: string
