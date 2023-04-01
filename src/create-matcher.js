@@ -20,12 +20,19 @@ export function createMatcher (
   routes: Array<RouteConfig>,
   router: VueRouter
 ): Matcher {
+  // 将路由配置表VueRouter.options.routes转化为routeMap
+  // 方便后续快速定位路由组件、父路由位置
+  // pathList: [ '/', '/home', '/product' ]
+  // pathMap: { '/': { path: '/', component: Home, name: 'Home' } }
+  // nameMap: { 'Home': { path: '/', component: Home } }
   const { pathList, pathMap, nameMap } = createRouteMap(routes)
 
+  // 新增routes, 并转化为RouteMap
   function addRoutes (routes) {
     createRouteMap(routes, pathList, pathMap, nameMap)
   }
 
+  // 新增Route
   function addRoute (parentOrRoute, route) {
     const parent = (typeof parentOrRoute !== 'object') ? nameMap[parentOrRoute] : undefined
     // $flow-disable-line
